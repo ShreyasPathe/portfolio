@@ -19,5 +19,26 @@ This repository is public so others can explore the code —
 
 ### Clone the repository
 ```bash
-git clone https://github.com/<your-username>/<your-repo>.git
-cd <your-repo>
+git clone https://github.com/shreyaspathe/portfolio.git
+cd portfolio
+```
+
+### Install dependencies
+```bash
+npm install
+```
+
+### Run locally
+```bash
+npm run dev
+```
+## 📝 License
+
+This project is open-source and available for **educational purposes only**.  
+Please do not use it for commercial purposes without permission.
+
+
+
+
+
+
