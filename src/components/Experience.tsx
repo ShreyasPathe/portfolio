@@ -1,146 +1,150 @@
 
-import React, { useRef, useState } from 'react';
-import { motion, type Variants } from 'framer-motion';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { MapPin, Briefcase, Calendar, Star } from 'lucide-react';
 import { EXPERIENCE_DATA } from '../constants';
 import SpotlightCard from './SpotlightCard';
 
 const Experience: React.FC = () => {
-  const sectionRef = useRef<HTMLElement>(null);
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
-
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (sectionRef.current) {
-      const rect = sectionRef.current.getBoundingClientRect();
-      setMousePos({
-        x: e.clientX - rect.left,
-        y: e.clientY - rect.top,
-      });
-    }
-  };
-
-  // Animation Variants for Staggered Data Stream
-  const cardContentVariants: Variants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.15, // Slow stagger for "reading" effect
-        delayChildren: 0.3
-      }
-    }
-  };
-
-  const textItemVariants: Variants = {
-    hidden: { opacity: 0, x: -10, filter: "blur(4px)" },
-    visible: { 
-      opacity: 1, 
-      x: 0, 
-      filter: "blur(0px)",
-      transition: { duration: 0.5, ease: "easeOut" } 
-    }
-  };
+  const [activeTab, setActiveTab] = useState(0);
 
   return (
     <section 
       id="experience" 
-      ref={sectionRef}
-      onMouseMove={handleMouseMove}
-      className="relative py-20 bg-cyber-dark overflow-hidden group border-t border-white/5"
+      className="relative py-24 bg-cyber-dark overflow-hidden border-t border-white/5"
     >
-      {/* Section-Specific Cursor Glow */}
-      <div 
-        className="pointer-events-none absolute inset-0 transition-opacity duration-500 opacity-0 group-hover:opacity-100"
-        style={{
-          background: `radial-gradient(800px circle at ${mousePos.x}px ${mousePos.y}px, rgba(6, 182, 212, 0.07), transparent 40%)`
-        }}
-      />
-
-      {/* Main Container matching other sections max-w-6xl */}
       <div className="relative z-10 max-w-6xl mx-auto px-6">
-        
-        {/* Header aligned with other sections */}
+        {/* Section Header */}
         <div className="flex items-center gap-4 mb-16">
-            <span className="font-mono text-cyber-primary text-sm">02.</span>
-            <h2 className="text-2xl md:text-3xl font-bold text-white">Where I've Worked</h2>
-            <div className="h-px bg-white/10 flex-grow ml-4" />
+          <span className="font-mono text-cyber-primary text-sm">02.</span>
+          <h2 className="text-2xl md:text-3xl font-bold text-white tracking-tight tracking-wider">Experience</h2>
+          <div className="h-px bg-white/10 flex-grow ml-4 max-w-xs" />
         </div>
 
-        {/* Content Container - kept tight/narrow as requested */}
-        <div className="max-w-3xl mx-auto relative">
-          {/* Main Track Line - Animated Gradient */}
-          <div className="absolute left-[20px] md:left-[24px] top-4 bottom-0 w-px bg-gradient-to-b from-cyber-primary/50 via-slate-800 to-slate-900 z-0" />
-
-          <div className="space-y-2">
+        <div className="mt-10 flex flex-col md:flex-row min-h-[450px] gap-8 md:gap-12">
+          
+          {/* TABS SELECTOR */}
+          <div className="relative flex md:flex-col overflow-x-auto md:overflow-x-visible pb-4 md:pb-0 scrollbar-hide md:min-w-[220px] max-w-full">
             {EXPERIENCE_DATA.map((exp, index) => (
-              <div key={index} className="relative pl-16 pt-2">
-                
-                {/* 1. Tech Node (Circle) - Slow Travel Up with Pulse */}
-                <motion.div 
-                   initial={{ y: 100, opacity: 0, scale: 0.5 }}
-                   whileInView={{ y: 0, opacity: 1, scale: 1 }}
-                   viewport={{ once: true, margin: "-100px" }}
-                   transition={{ duration: 1.5, ease: [0.22, 1, 0.36, 1] }} // Advanced easing
-                   className="absolute left-[12px] md:left-[16px] top-[34px] w-4 h-4 z-20 flex items-center justify-center"
-                >
-                    <div className="w-full h-full rounded-full bg-cyber-dark border-2 border-cyber-primary shadow-[0_0_15px_rgba(6,182,212,0.8)] relative">
-                        <div className="absolute inset-0 rounded-full bg-cyber-primary opacity-20 animate-ping" />
-                    </div>
-                </motion.div>
-
-                {/* 2. Connector Beam - Shoots out horizontally */}
-                <motion.div
-                    initial={{ scaleX: 0, opacity: 0 }}
-                    whileInView={{ scaleX: 1, opacity: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: 1.2, duration: 0.4, ease: "circOut" }}
-                    style={{ originX: 0 }}
-                    className="absolute left-[28px] top-[41px] h-0.5 w-8 bg-cyber-primary/50 z-10 hidden md:block"
-                />
-
-                {/* 3. Content Card - Boots up */}
-                <motion.div
-                  initial={{ opacity: 0, x: 20, filter: "blur(5px)" }}
-                  whileInView={{ opacity: 1, x: 0, filter: "blur(0px)" }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 1.4, duration: 0.8, ease: "easeOut" }}
-                >
-                  <SpotlightCard className="bg-cyber-dark/90 backdrop-blur-md border border-white/5 w-full h-fit hover:border-cyber-primary/30 transition-all duration-500 group/card">
-                    <motion.div 
-                        className="p-5"
-                        variants={cardContentVariants}
-                        initial="hidden"
-                        whileInView="visible"
-                        viewport={{ once: true }}
-                    >
-                        <div className="flex flex-col md:flex-row md:items-start justify-between mb-3 gap-2">
-                            <motion.div variants={textItemVariants}>
-                                <h3 className="text-2xl font-bold text-white tracking-tight group-hover/card:text-cyber-primary transition-colors duration-300">
-                                    {exp.title}
-                                </h3>
-                                <p className="text-cyber-primary font-mono text-base mt-1 tracking-wide">@{exp.company}</p>
-                            </motion.div>
-                            
-                            <motion.div variants={textItemVariants} className="font-mono text-xs text-slate-300 bg-cyber-primary/10 px-4 py-1.5 rounded-full border border-cyber-primary/20 whitespace-nowrap w-fit self-start">
-                                {exp.period}
-                            </motion.div>
-                        </div>
-                        
-                        <motion.ul className="space-y-2">
-                            {exp.description.map((item, i) => (
-                                <motion.li key={i} variants={textItemVariants} className="text-slate-300 text-base leading-relaxed flex items-start gap-3">
-                                    <span className="text-cyber-primary mt-1.5 text-[10px] flex-shrink-0">▹</span>
-                                    <span>{item}</span>
-                                </motion.li>
-                            ))}
-                        </motion.ul>
-                    </motion.div>
-                  </SpotlightCard>
-                </motion.div>
-              </div>
+              <button
+                key={index}
+                onClick={() => setActiveTab(index)}
+                className={`
+                  h-12 px-5 md:px-6 flex items-center whitespace-nowrap md:w-full text-left
+                  font-mono text-xs md:text-sm tracking-wider transition-all duration-300 border-b-2 md:border-b-0 md:border-l-2
+                  ${activeTab === index 
+                    ? 'text-cyber-primary bg-cyber-primary/5 border-cyber-primary font-bold' 
+                    : 'text-slate-500 border-white/10 hover:text-cyber-primary hover:bg-white/5'
+                  }
+                `}
+              >
+                {exp.company}
+              </button>
             ))}
+            
+            {/* Sliding Indicator (Desktop) */}
+            <motion.div 
+               animate={{ y: activeTab * 48 }}
+               transition={{ type: "spring", stiffness: 300, damping: 30 }}
+               className="absolute left-0 top-0 w-[2px] h-12 bg-cyber-primary hidden md:block"
+            />
+            
+            {/* Sliding Indicator (Mobile) */}
+            {/* Note: In mobile, the indicator is handled by the border-b on the button above for simplicity and better scroll behavior */}
           </div>
+
+          {/* CONTENT AREA */}
+          <div className="flex-grow">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={activeTab}
+                initial={{ opacity: 0, x: 10, filter: "blur(4px)" }}
+                animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
+                exit={{ opacity: 0, x: -10, filter: "blur(4px)" }}
+                transition={{ duration: 0.3, ease: "easeOut" }}
+                className="w-full"
+              >
+                <SpotlightCard className="bg-white/[0.03] backdrop-blur-md border border-white/5 p-6 md:p-10 rounded-2xl shadow-2xl">
+                  
+                  {/* Role Detail Header */}
+                  <div className="mb-8">
+                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+                      <div className="flex items-center gap-5">
+                          {EXPERIENCE_DATA[activeTab].image && (
+                            <div className="w-14 h-14 md:w-20 md:h-20 rounded-2xl bg-white flex items-center justify-center shadow-xl border border-white/10 overflow-hidden group-hover:scale-105 transition-transform duration-500">
+                                <img 
+                                  src={EXPERIENCE_DATA[activeTab].image} 
+                                  alt={EXPERIENCE_DATA[activeTab].company} 
+                                  className="w-full h-full object-cover"
+                                />
+                            </div>
+                          )}
+                          <div>
+                            <h3 className="text-xl md:text-2xl font-bold text-white tracking-tight flex flex-wrap items-center gap-2">
+                              {EXPERIENCE_DATA[activeTab].title} 
+                              <span className="text-cyber-primary">@</span> 
+                              <span className="text-cyber-primary">{EXPERIENCE_DATA[activeTab].company}</span>
+                            </h3>
+                            <div className="flex flex-wrap gap-4 mt-2">
+                                <span className="flex items-center gap-1.5 text-xs text-slate-400 font-mono">
+                                    <Calendar size={14} className="text-cyber-primary" />
+                                    {EXPERIENCE_DATA[activeTab].period}
+                                </span>
+                                {EXPERIENCE_DATA[activeTab].location && (
+                                    <span className="flex items-center gap-1.5 text-xs text-slate-400 font-mono">
+                                        <MapPin size={14} className="text-cyber-primary" />
+                                        {EXPERIENCE_DATA[activeTab].location}
+                                    </span>
+                                )}
+                            </div>
+                          </div>
+                      </div>
+                      
+                      {EXPERIENCE_DATA[activeTab].type && (
+                         <div className="px-3 py-1 rounded-full border border-cyber-primary/20 bg-cyber-primary/5 text-cyber-primary font-mono text-[10px] uppercase tracking-widest w-fit font-bold">
+                            {EXPERIENCE_DATA[activeTab].type}
+                         </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Bullet Points */}
+                  <ul className="space-y-4">
+                    {EXPERIENCE_DATA[activeTab].description.map((point, i) => (
+                      <motion.li 
+                        key={i}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: i * 0.1 }}
+                        className="flex items-start gap-4 text-slate-300 text-sm md:text-base leading-relaxed group"
+                      >
+                        <span className="mt-1.5 flex-shrink-0">
+                          <Star size={10} className="text-cyber-primary group-hover:scale-125 transition-transform duration-300" />
+                        </span>
+                        <span className="group-hover:text-white transition-colors duration-300">
+                          {point}
+                        </span>
+                      </motion.li>
+                    ))}
+                  </ul>
+
+                  {/* Skills/Tags if available - (Optional addition for future expansion) */}
+                  <div className="mt-10 flex items-center gap-2">
+                     <div className="h-px bg-white/5 flex-grow" />
+                     <Briefcase size={16} className="text-cyber-primary/40" />
+                     <div className="h-px bg-white/5 flex-grow" />
+                  </div>
+                </SpotlightCard>
+              </motion.div>
+            </AnimatePresence>
+          </div>
+
         </div>
       </div>
+
+      {/* Decorative BG Elements */}
+      <div className="absolute top-1/4 right-0 w-64 h-64 bg-cyber-primary/5 blur-[100px] rounded-full" />
+      <div className="absolute bottom-1/4 left-0 w-64 h-64 bg-cyber-primary/5 blur-[100px] rounded-full" />
     </section>
   );
 };

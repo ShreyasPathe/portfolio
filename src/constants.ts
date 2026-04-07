@@ -20,9 +20,40 @@ export const ABOUT_TEXT = "I am a technology enthusiast and an IT Engineer with 
 
 export const EXPERIENCE_DATA: ExperienceItem[] = [
   {
-    title: "Website Development Intern",
+    title: "Founding Full Stack Engineer",
+    company: "ITAGO",
+    period: "Feb 2026 – Apr 2026",
+    location: "Mumbai, Maharashtra, India (Hybrid)",
+    type: "Freelance",
+    image: "/images/itago-logo.jpg",
+    description: [
+      "Built a 0 → 1 AI chatbot platform for compliance & governance CXOs, owning complete full-stack development (frontend, backend, infra) as the first engineer.",
+      "Engineered LLM-powered workflows (TypeScript + AWS) with optimized prompting, caching, and response pipelines to reduce token cost and improve latency.",
+      "Designed and deployed a scalable architecture on Vercel + MongoDB Atlas, integrating Clerk (auth), Razorpay (payments), Sentry (monitoring), and analytics.",
+      "Delivered high-performance UX (90+ scores) across India & US by optimizing APIs, caching layers, and frontend performance.",
+      "Led system design, technical architecture, and cost optimization, working directly with founder on product, security, and business decisions."
+    ]
+  },
+  {
+    title: "Shopify Engineering Intern",
+    company: "Dear Digital",
+    period: "Nov 2025 – Jan 2026",
+    location: "Ghent, Flemish Region, Belgium (Remote)",
+    type: "Internship",
+    image: "/images/dd-logo.jpeg",
+    description: [
+      "Gained hands-on experience in the Shopify ecosystem, learning and applying concepts from the Shopify Partner and Shopify Learn platforms.",
+      "Developed skills in Shopify Liquid, Remix Framework, GraphQL APIs, Shopify CLI, theme development, and app development along with best practices for building scalable Shopify applications.",
+      "Applied these learnings to practical development tasks during the internship, successfully completing two competitive project assignments and secured 1st place in both, earning a total of €400 among participating interns."
+    ]
+  },
+  {
+    title: "Full Stack Developer Intern",
     company: "The Work Journals",
-    period: "Aug 2025 – Nov 2025",
+    period: "Aug 2025 – Oct 2025",
+    location: "Mumbai, Maharashtra, India (On-site)",
+    type: "Internship",
+    image: "/images/twj-logo.jpg",
     description: [
       "Built and launched 6+ production-ready websites leveraging PHP, Shopify Liquid, and WordPress, with complete ownership of development, deployment, and hosting infrastructure.",
       "Delivered end-to-end web solutions for global clients, including BareNue (women’s lingerie brand, ₹1L+ monthly sales via website), KlearProp (Mumbai-based brokerage, 10,000+ website visitors, multiple leads converted via website), TheTurquoiseWeddings (Canada-based complete wedding planners), and VJCC Culinary Arts (Dubai-based culinary institute), from concept to live deployment.",
@@ -32,6 +63,22 @@ export const EXPERIENCE_DATA: ExperienceItem[] = [
 ];
 
 export const PROJECTS_DATA: ProjectItem[] = [
+  {
+    title: "ITAGO",
+    category: "AI & Compliance",
+    description: "Developed an AI-powered chatbot platform tailored for CXOs to streamline compliance, governance, and audit processes, with a focus on Indian statutory frameworks. Enabled real-time query resolution, regulatory insights, and decision support using a scalable full-stack architecture and LLM-based intelligence.",
+    tags: ["Typescript", "Clerk", "AI", "Razorpay", "AWS"],
+    image: "/images/itago-project.png",
+    liveUrl: "https://www.itago.in/"
+  },
+  {
+    title: "SignSpeak",
+    category: "AI/ML & Next.js",
+    description: "Developed a sign language detection system using Python and ML, with a Next.js interface for one-click setup and execution, as part of my B.E. Major Project.",
+    tags: ["Python", "Next.js", "AI/ML"],
+    image: "/images/signspeak.png",
+    liveUrl: "https://signspeak-lilac.vercel.app/"
+  },
   {
     title: "AI Finance Dashboard",
     category: "Next.js & AI",
@@ -89,7 +136,7 @@ export const SKILLS_DATA: SkillCategory[] = [
   },
   {
     title: "GenAI & Automation",
-    skills: ["Chatbot Integration", "RAG Pipelines", "LLM APIs (Gemini/OpenAI)", "LangChain", "AI Agents"]
+    skills: ["Chatbot Integration", "RAG Pipelines", "LLM APIs", "LangChain", "AI Agents"]
   },
   {
     title: "Languages & Scripting",
@@ -124,6 +171,27 @@ export type CertificationItemExtended = CertificationItem & {
 /* ---------------------------------------------------------------- */
 
 export const CERTIFICATIONS_DATA: CertificationItemExtended[] = [
+  {
+    name: "AI Fluency: Framework & Foundation",
+    issuer: "Anthropic",
+    image: "/images/anthropic.jpg",
+    credentialUrl: "https://verify.skilljar.com/c/yxuo9sx2mson",
+    logoBgColor: 'white'
+  },
+  {
+    name: "Google AI Essentials",
+    issuer: "Google",
+    image: "/images/google.jpg",
+    credentialUrl: "https://www.coursera.org/account/accomplishments/specialization/certificate/UMWTOEKFIFXV",
+    logoBgColor: 'white'
+  },
+  {
+    name: "Career Essentials in Cybersecurity",
+    issuer: "Microsoft and LinkedIn",
+    image: "/images/microsoft.jpg",
+    credentialUrl: "https://www.linkedin.com/learning/certificates/0cfefc7ef79358f673c9008313321b2ac9400e6814c01b9e9a12f8e33eb2a9ea",
+    logoBgColor: 'white'
+  },
   {
     name: "Full Stack Web Developer Bootcamp",
     issuer: "GeeksforGeeks",

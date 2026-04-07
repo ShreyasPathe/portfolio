@@ -10,7 +10,7 @@ const Projects: React.FC = () => {
       <div className="max-w-6xl mx-auto px-6 relative z-10">
         <div className="flex items-center gap-4 mb-16">
             <span className="font-mono text-cyber-primary text-sm">03.</span>
-            <h2 className="text-2xl md:text-3xl font-bold text-white">Selected Projects</h2>
+            <h2 className="text-2xl md:text-3xl font-bold text-white tracking-wider">Projects</h2>
             <div className="h-px bg-white/10 flex-grow ml-4" />
         </div>
 

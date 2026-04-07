@@ -9,6 +9,9 @@ export interface ExperienceItem {
   title: string;
   company: string;
   period: string;
+  location?: string;
+  type?: string;
+  image?: string;
   description: string[];
 }
 

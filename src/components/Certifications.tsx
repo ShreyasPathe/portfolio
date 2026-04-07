@@ -109,7 +109,7 @@ const TiltCard = ({ cert }: { cert: any }) => {
 
         {/* Button Indicator */}
         <div className="mt-6 px-6 py-2 bg-white/5 group-hover:bg-cyber-primary group-hover:text-slate-950 text-cyber-primary text-xs font-mono rounded-full border border-white/10 group-hover:border-cyber-primary transition-all duration-300 flex items-center gap-2">
-          VERIFY <ExternalLink className="w-3 h-3" />
+          View Credential <ExternalLink className="w-3 h-3" />
         </div>
       </div>
     </motion.div>
