@@ -64,6 +64,14 @@ export const EXPERIENCE_DATA: ExperienceItem[] = [
 
 export const PROJECTS_DATA: ProjectItem[] = [
   {
+    title: "PetChain",
+    category: "Blockchain",
+    description: "PetChain is a decentralised blockchain-based platform that redefines the standards of pet care and management. Leveraging the power of Resilient DB, PetChain offers secure and tamper-proof pet identification, seamless health record management, and hassle-free ownership transfer capabilities.",
+    tags: ["Blockchain", "ResilientDB", "Decentralized Platform"],
+    image: "/images/petchain.jpeg",
+    liveUrl: "https://github.com/ShreyasPathe/petchain"
+  },
+  {
     title: "ITAGO",
     category: "AI & Compliance",
     description: "Developed an AI-powered chatbot platform tailored for CXOs to streamline compliance, governance, and audit processes, with a focus on Indian statutory frameworks. Enabled real-time query resolution, regulatory insights, and decision support using a scalable full-stack architecture and LLM-based intelligence.",
