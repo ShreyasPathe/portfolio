@@ -1,55 +1,46 @@
-
-import React from 'react';
-import { motion } from 'framer-motion';
-import { Linkedin, Mail, ArrowRight } from 'lucide-react';
-import SubtleGrid from './SubtleGrid';
+import React, { useRef } from 'react';
+import { motion, useScroll, useTransform } from 'framer-motion';
+import { ArrowUpRight, Linkedin, Mail } from 'lucide-react';
 import { SOCIAL_LINKS } from '../constants';
+import { Reveal } from './fx/Enhancers';
 
 const Contact: React.FC = () => {
+  const ref = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'center center'] });
+  const scale = useTransform(scrollYProgress, [0, 1], [0.6, 1]);
+  const spread = useTransform(scrollYProgress, [0, 1], ['-0.02em', '-0.055em']);
+  const glow = useTransform(scrollYProgress, [0, 1], [0.2, 1]);
   return (
-    <section id="contact" className="py-24 relative overflow-hidden">
-      {/* Interactive Subtle Grid Background */}
-      <SubtleGrid />
-
-      <div className="max-w-4xl mx-auto px-6 relative z-10">
-        <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-16"
-        >
-            <span className="font-mono text-cyber-primary text-sm bg-cyber-dark/60 backdrop-blur-sm px-2 py-1 rounded border border-cyber-primary/20">06. What's Next?</span>
-            <h2 className="text-4xl md:text-5xl font-bold text-white mt-4 mb-6 drop-shadow-[0_0_15px_rgba(6,182,212,0.3)]">Get In Touch</h2>
-            <p className="text-slate-300 text-lg max-w-xl mx-auto leading-relaxed mb-12 bg-cyber-dark/40 backdrop-blur-sm p-6 rounded-xl border border-white/5 shadow-xl">
-              I'm currently open to new opportunities. Whether you have a question or just want to say hi, I'll try my best to get back to you!
-            </p>
-            
-            <div className="flex flex-col md:flex-row justify-center gap-6">
-                 <a 
-                    href={SOCIAL_LINKS.linkedin} 
-                    target="_blank" 
-                    rel="noreferrer"
-                    className="group flex items-center justify-center gap-3 px-8 py-4 bg-cyber-card/60 backdrop-blur-md border border-white/10 rounded-lg hover:border-cyber-primary/50 transition-all duration-300 hover:shadow-[0_0_25px_rgba(6,182,212,0.2)] hover:-translate-y-1"
-                 >
-                    <Linkedin className="w-5 h-5 text-slate-400 group-hover:text-cyber-primary transition-colors" />
-                    <span className="text-slate-300 group-hover:text-white font-mono text-sm">Connect on LinkedIn</span>
-                    <ArrowRight className="w-4 h-4 text-slate-500 group-hover:translate-x-1 transition-transform" />
-                 </a>
-                 
-                 <a 
-                    href={SOCIAL_LINKS.email}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="group flex items-center justify-center gap-3 px-8 py-4 bg-cyber-card/60 backdrop-blur-md border border-white/10 rounded-lg hover:border-cyber-primary/50 transition-all duration-300 hover:shadow-[0_0_25px_rgba(6,182,212,0.2)] hover:-translate-y-1"
-                 >
-                    <Mail className="w-5 h-5 text-slate-400 group-hover:text-cyber-primary transition-colors" />
-                    <span className="text-slate-300 group-hover:text-white font-mono text-sm">Send Email</span>
-                    <ArrowRight className="w-4 h-4 text-slate-500 group-hover:translate-x-1 transition-transform" />
-                 </a>
-            </div>
-        </motion.div>
-      </div>
-    </section>
+  <section ref={ref} id="contact" className="relative overflow-hidden px-5 md:px-10 py-28 md:py-40 border-t border-line">
+    <motion.div style={{ opacity: glow }} aria-hidden className="absolute left-1/2 top-1/2 h-[500px] w-[900px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-accent/10 blur-[160px]" />
+    <div className="relative mx-auto max-w-7xl text-center">
+      <Reveal>
+        <span className="inline-flex items-center gap-2 rounded-full border border-line bg-white/[0.03] px-3 py-1.5 font-mono text-xs text-muted">
+          <span className="text-accent">06.</span> What's Next?
+        </span>
+      </Reveal>
+      <Reveal delay={0.08}>
+        <motion.h2 style={{ scale, letterSpacing: spread }} className="mt-8 font-semibold leading-[0.9] text-fg text-[clamp(3.5rem,12vw,11rem)]">
+          Get In <span className="font-serif italic font-normal text-accent">Touch</span>
+        </motion.h2>
+      </Reveal>
+      <Reveal delay={0.16}>
+        <p className="mx-auto mt-8 max-w-xl text-lg leading-relaxed text-muted">
+          I'm currently open to new opportunities. Whether you have a question or just want to say hi, I'll try my best to get back to you!
+        </p>
+      </Reveal>
+      <Reveal delay={0.24} className="mt-12 flex flex-col sm:flex-row justify-center gap-3">
+        <a href={SOCIAL_LINKS.email} target="_blank" rel="noreferrer"
+          className="group inline-flex items-center justify-center gap-3 rounded-full bg-accent px-8 py-4 font-medium text-ink transition-transform hover:scale-[1.03]">
+          <Mail className="h-5 w-5" /> Send Email <ArrowUpRight className="h-4 w-4 transition-transform group-hover:rotate-45" />
+        </a>
+        <a href={SOCIAL_LINKS.linkedin} target="_blank" rel="noreferrer"
+          className="group inline-flex items-center justify-center gap-3 rounded-full border border-line bg-white/[0.03] px-8 py-4 font-medium text-fg transition-colors hover:border-white/30">
+          <Linkedin className="h-5 w-5" /> Connect on LinkedIn <ArrowUpRight className="h-4 w-4 transition-transform group-hover:rotate-45" />
+        </a>
+      </Reveal>
+    </div>
+  </section>
   );
 };
 

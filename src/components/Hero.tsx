@@ -1,114 +1,82 @@
+import React, { useRef } from 'react';
+import { motion, useScroll, useTransform } from 'framer-motion';
+import { ArrowDownRight, Github, Linkedin } from 'lucide-react';
+import { SOCIAL_LINKS, EXPERIENCE_DATA } from '../constants';
+import { SplitReveal, scrollToId } from './fx/Enhancers';
+import { LOADER_MS } from './fx/Hud';
 
-import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { ChevronDown, Github, Linkedin } from 'lucide-react';
-import LightRays from './LightRays';
-import Magnet from './Magnet';
-import { SOCIAL_LINKS } from '../constants';
-import { Link } from 'react-scroll';
+const D = LOADER_MS / 1000;
+const fade = (delay: number) => ({
+  initial: { opacity: 0, y: 16 },
+  animate: { opacity: 1, y: 0 },
+  transition: { duration: 0.8, delay: D + delay, ease: [0.22, 1, 0.36, 1] as const },
+});
 
+/** Pinned for 1 extra screen: the name zooms past the camera while details fall away. */
 const Hero: React.FC = () => {
-  const [lightsOn, setLightsOn] = useState(false);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setLightsOn(true);
-    }, 500);
-    return () => clearTimeout(timer);
-  }, []);
+  const current = EXPERIENCE_DATA[0];
+  const ref = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] });
+  const scale = useTransform(scrollYProgress, [0, 0.6], [1, 2.6]);
+  const nameY = useTransform(scrollYProgress, [0, 0.6], ['0%', '-30%']);
+  const nameOpacity = useTransform(scrollYProgress, [0.25, 0.6], [1, 0]);
+  const blur = useTransform(scrollYProgress, [0.2, 0.6], ['blur(0px)', 'blur(12px)']);
+  const detailsY = useTransform(scrollYProgress, [0, 0.4], ['0%', '60%']);
+  const detailsOpacity = useTransform(scrollYProgress, [0, 0.3], [1, 0]);
+  const auroraScale = useTransform(scrollYProgress, [0, 1], [1, 1.6]);
 
   return (
-    <section 
-      id="hero" 
-      className="relative h-screen flex items-center justify-center overflow-hidden bg-cyber-dark"
-    >
-      {/* Background Light Rays */}
-      <div className={`absolute inset-0 transition-opacity duration-1000 ${lightsOn ? 'opacity-100' : 'opacity-0'}`}>
-        <LightRays />
-      </div>
-
-      {/* AMBIENT DARKNESS OVERLAY - Fades out when initialized */}
-      <div 
-        className={`absolute inset-0 bg-black z-40 transition-opacity duration-[2000ms] pointer-events-none ${lightsOn ? 'opacity-0' : 'opacity-100'}`} 
-      />
-
-      {/* CONTENT */}
-      <div className="relative z-50 text-center px-4">
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={lightsOn ? { opacity: 1 } : { opacity: 0 }}
-          transition={{ duration: 0.5, delay: 1.5 }} 
-        >
-          <motion.p 
-            initial={{ y: 20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: 2, duration: 0.8 }}
-            className="font-mono text-cyber-primary mb-4 tracking-widest text-sm uppercase"
-          >
-            Hello World
-          </motion.p>
-
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white tracking-tight mb-4 mix-blend-overlay">
-             <span className="inline-block text-slate-400 mr-3 md:mr-5 font-light">I am</span>
-             <span className="inline-block animate-flicker" style={{ animationDelay: '1.8s' }}>Shreyas Pathe</span>
-          </h1>
-
-          <div className={`h-px w-full max-w-md bg-gradient-to-r from-transparent via-cyber-primary/50 to-transparent mx-auto my-8 transition-transform duration-1000 ${lightsOn ? 'scale-x-100' : 'scale-x-0'}`} />
-
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 3, duration: 1 }}
-            className="flex flex-col items-center gap-2"
-          >
-            <h2 className="text-xl md:text-2xl text-slate-300 font-light">
-              IT Engineer <span className="text-cyber-text mx-2">/</span> Full Stack Developer (MERN Stack)
-            </h2>
-            <p className="text-slate-500 text-sm md:text-base max-w-lg mt-4 leading-relaxed">
-              Building secure, scalable, and majestic digital experiences.
-            </p>
-          </motion.div>
-
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 3.5 }}
-            className="mt-12 flex flex-wrap justify-center items-center gap-6"
-          >
-             <Link to="projects" smooth={true} duration={800} offset={-50}>
-              <Magnet>
-                <button className="group relative px-8 py-3 bg-transparent border border-cyber-primary/30 text-cyber-primary font-mono text-sm hover:bg-cyber-primary/10 transition-all duration-300 cursor-pointer">
-                  <span className="absolute inset-0 w-0 bg-cyber-primary/10 transition-all duration-[250ms] ease-out group-hover:w-full"></span>
-                  <span className="relative">VIEW_WORK</span>
-                </button>
-              </Magnet>
-            </Link>
-
-            <div className="flex gap-4">
-                <Magnet>
-                  <a href={SOCIAL_LINKS.github} target="_blank" rel="noreferrer" className="block p-3 border border-white/10 rounded hover:border-cyber-primary/50 hover:text-cyber-primary text-slate-400 transition-all">
-                      <Github className="w-5 h-5" />
-                  </a>
-                </Magnet>
-                <Magnet>
-                  <a href={SOCIAL_LINKS.linkedin} target="_blank" rel="noreferrer" className="block p-3 border border-white/10 rounded hover:border-cyber-primary/50 hover:text-cyber-primary text-slate-400 transition-all">
-                      <Linkedin className="w-5 h-5" />
-                  </a>
-                </Magnet>
-            </div>
-          </motion.div>
+    <section id="hero" ref={ref} className="relative h-[200svh]">
+      <div className="sticky top-0 h-[100svh] overflow-hidden flex flex-col justify-end px-5 md:px-10 pt-32 pb-10">
+        <motion.div aria-hidden style={{ scale: auroraScale }} className="absolute inset-0">
+          <div className="absolute -top-40 left-[5%] h-[520px] w-[520px] rounded-full bg-accent/[0.12] blur-[140px] animate-aurora" />
+          <div className="absolute top-[5%] right-[0%] h-[480px] w-[480px] rounded-full bg-violet-600/20 blur-[140px] animate-aurora [animation-delay:-6s]" />
+          <div className="absolute bottom-[-10%] left-[30%] h-[400px] w-[600px] rounded-full bg-sky-500/10 blur-[150px] animate-aurora [animation-delay:-12s]" />
         </motion.div>
-      </div>
 
-      {/* BOTTOM SCROLL */}
-      <motion.div 
-        initial={{ opacity: 0 }}
-        animate={lightsOn ? { opacity: 1 } : { opacity: 0 }}
-        transition={{ delay: 4, duration: 1 }}
-        className="absolute bottom-10 left-1/2 -translate-x-1/2 text-cyber-primary/30 animate-bounce"
-      >
-        <ChevronDown className="w-6 h-6" />
-      </motion.div>
+        <div className="relative z-10 mx-auto w-full max-w-7xl">
+          <motion.div {...fade(0.1)} className="mb-8 flex flex-wrap items-center gap-3">
+            <span className="glass inline-flex items-center gap-2 rounded-full px-3 py-1.5 font-mono text-xs text-muted">
+              <span className="h-1.5 w-1.5 rounded-full bg-accent animate-pulse-dot" /> Hello World
+            </span>
+            <span className="font-mono text-xs text-muted">
+              Currently — {current.title} @ <span className="text-fg">{current.company}</span>
+            </span>
+          </motion.div>
+
+          <motion.h1 style={{ scale, y: nameY, opacity: nameOpacity, filter: blur }}
+            className="origin-[30%_70%] font-semibold tracking-[-0.055em] leading-[0.85] text-fg text-[clamp(4rem,14.5vw,15rem)]">
+            <span className="block font-serif italic font-normal tracking-normal text-muted text-[0.3em] leading-none mb-3 ml-1">
+              <SplitReveal text="I am" delay={D + 0.1} />
+            </span>
+            <SplitReveal text="Shreyas" delay={D + 0.2} />
+            <br className="md:hidden" />
+            <span className="hidden md:inline">&nbsp;</span>
+            <SplitReveal text="Pathe" delay={D + 0.45} className="text-accent" />
+          </motion.h1>
+
+          <motion.div style={{ y: detailsY, opacity: detailsOpacity }}
+            className="mt-12 grid gap-8 border-t border-line pt-8 md:grid-cols-12 md:items-end">
+            <motion.div {...fade(0.8)} className="md:col-span-5">
+              <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-muted mb-2">Role</p>
+              <h2 className="text-xl md:text-2xl text-fg">IT Engineer <span className="text-muted">/</span> Full Stack Developer</h2>
+            </motion.div>
+            <motion.p {...fade(0.9)} className="md:col-span-4 text-muted leading-relaxed">
+              Building secure, scalable, and majestic digital experiences.
+            </motion.p>
+            <motion.div {...fade(1)} className="md:col-span-3 flex items-center gap-2 md:justify-end">
+              <button onClick={() => scrollToId('projects')}
+                className="group inline-flex items-center gap-2 rounded-full bg-accent px-5 py-3 text-sm font-medium text-ink transition-transform hover:scale-[1.03]">
+                View Work <ArrowDownRight className="h-4 w-4 transition-transform group-hover:-rotate-45" />
+              </button>
+              <a href={SOCIAL_LINKS.github} target="_blank" rel="noreferrer" aria-label="GitHub"
+                className="glass grid h-11 w-11 place-items-center rounded-full text-muted hover:text-fg transition-colors"><Github className="h-4 w-4" /></a>
+              <a href={SOCIAL_LINKS.linkedin} target="_blank" rel="noreferrer" aria-label="LinkedIn"
+                className="glass grid h-11 w-11 place-items-center rounded-full text-muted hover:text-fg transition-colors"><Linkedin className="h-4 w-4" /></a>
+            </motion.div>
+          </motion.div>
+        </div>
+      </div>
     </section>
   );
 };

@@ -20,6 +20,18 @@ export const ABOUT_TEXT = "I am a technology enthusiast and an IT Engineer with 
 
 export const EXPERIENCE_DATA: ExperienceItem[] = [
   {
+    title: "Junior Full Stack Developer",
+    company: "dear digital",
+    period: "Jun 2026 – Present",
+    location: "Ghent, Belgium (Remote)",
+    image: "/images/dd-logo.jpeg",
+    description: [
+      "Shipping client-facing Shopify experiences end to end, including custom themes, app integrations, and storefront logic in production environments.",
+      "Owning delivery of Liquid, Remix, and GraphQL-based commerce solutions in a remote European engineering setup.",
+      "Collaborating with designers and stakeholders to translate brand requirements into maintainable, high-performing storefronts."
+    ]
+  },
+  {
     title: "Founding Full Stack Engineer",
     company: "ITAGO",
     period: "Feb 2026 – Apr 2026",
@@ -36,7 +48,7 @@ export const EXPERIENCE_DATA: ExperienceItem[] = [
   },
   {
     title: "Shopify Engineering Intern",
-    company: "Dear Digital",
+    company: "dear digital",
     period: "Nov 2025 – Jan 2026",
     location: "Ghent, Flemish Region, Belgium (Remote)",
     type: "Internship",

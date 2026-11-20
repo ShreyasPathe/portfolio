@@ -1,51 +1,38 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: [
-    "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}",
-  ],
+  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
       colors: {
-        cyber: {
-          primary: '#06b6d4', // Cyan-500
-          primaryDim: 'rgba(6, 182, 212, 0.1)',
-          dark: '#020617', // Slate-950
-          card: '#0f172a', // Slate-900
-          text: '#94a3b8', // Slate-400
-          white: '#f8fafc', // Slate-50
-        },
-        fontFamily: {
-          sans: ['Inter', 'system-ui', 'sans-serif'],
-          mono: ['JetBrains Mono', 'SFMono-Regular', 'monospace'],
-        }
+        ink: '#08080a',
+        panel: '#0f0f12',
+        line: 'rgba(255,255,255,0.08)',
+        fg: '#ededed',
+        muted: '#8b8b94',
+        accent: { DEFAULT: '#c8ff4d', dim: 'rgba(200,255,77,0.12)' },
+      },
+      fontFamily: {
+        sans: ['Geist', 'system-ui', 'sans-serif'],
+        mono: ['Geist Mono', 'SFMono-Regular', 'monospace'],
+        serif: ['"Instrument Serif"', 'Georgia', 'serif'],
       },
       animation: {
-        'flicker': 'flicker 3s linear forwards',
-        'spotlight-on': 'turnOn 2s ease-out forwards',
-        'scan': 'scan 4s linear infinite',
+        marquee: 'marquee 45s linear infinite',
+        'marquee-rev': 'marquee 45s linear infinite reverse',
+        aurora: 'aurora 18s ease-in-out infinite alternate',
+        'pulse-dot': 'pulseDot 2s ease-in-out infinite',
+        bob: 'bob 1.6s ease-in-out infinite',
       },
       keyframes: {
-        flicker: {
-          '0%, 19.999%, 22%, 62.999%, 64%, 64.999%, 70%, 100%': { opacity: '0.99' },
-          '20%, 21.999%, 63%, 63.999%, 65%, 69.999%': { opacity: '0.4' },
+        marquee: { from: { transform: 'translateX(0)' }, to: { transform: 'translateX(-50%)' } },
+        aurora: {
+          '0%': { transform: 'translate(0,0) scale(1)' },
+          '50%': { transform: 'translate(8%,-6%) scale(1.15)' },
+          '100%': { transform: 'translate(-6%,4%) scale(0.95)' },
         },
-        turnOn: {
-          '0%': { opacity: 0, transform: 'scale(0.9)' },
-          '10%': { opacity: 0.1 },
-          '20%': { opacity: 0 },
-          '30%': { opacity: 0.4 },
-          '40%': { opacity: 0.1 },
-          '50%': { opacity: 1, transform: 'scale(1)' },
-          '100%': { opacity: 1, transform: 'scale(1)' }
-        },
-        scan: {
-          '0%': { top: '0%', opacity: 0 },
-          '10%': { opacity: 1 },
-          '90%': { opacity: 1 },
-          '100%': { top: '100%', opacity: 0 },
-        }
-      }
+        bob: { '0%,100%': { transform: 'translateY(-3px)' }, '50%': { transform: 'translateY(3px)' } },
+        pulseDot: { '0%,100%': { boxShadow: '0 0 0 0 rgba(200,255,77,0.6)' }, '50%': { boxShadow: '0 0 0 6px rgba(200,255,77,0)' } },
+      },
     },
   },
   plugins: [],
