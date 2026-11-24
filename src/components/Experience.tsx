@@ -214,7 +214,7 @@ export default function Experience() {
                   <h3 className="heading-4 mt-2">{item.title}</h3>
                   <ul className="mt-6 space-y-3">
                     {item.description.map((d, j) => (
-                      <li key={j} className={`body-3 flex gap-3 leading-relaxed ${j > 0 && !open[i] ? 'max-[719px]:hidden' : ''}`}>
+                      <li key={j} className={`body-3 flex gap-3 leading-relaxed ${j > 0 && !open[i] ? 'hidden' : ''}`}>
                         <span className="mt-2 h-1 w-1 shrink-0 rounded-full bg-subtle" />
                         <span>{d}</span>
                       </li>
@@ -225,7 +225,7 @@ export default function Experience() {
                       type="button"
                       aria-expanded={!!open[i]}
                       onClick={() => setOpen(s => ({ ...s, [i]: !s[i] }))}
-                      className="mt-4 text-sm font-medium text-foam/80 underline-offset-4 transition-colors hover:text-fg hover:underline min-[720px]:hidden"
+                      className="mt-4 text-sm font-medium text-foam/80 underline-offset-4 transition-colors hover:text-fg hover:underline"
                     >
                       {open[i] ? 'Read less' : 'Read more'}
                     </button>
