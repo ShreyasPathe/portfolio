@@ -1,5 +1,3 @@
-import type { LucideIcon } from 'lucide-react';
-
 export interface NavItem {
   label: string;
   to: string;
@@ -10,7 +8,6 @@ export interface ExperienceItem {
   company: string;
   period: string;
   location?: string;
-  type?: string;
   image?: string;
   description: string[];
 }
@@ -35,18 +32,4 @@ export interface CertificationItem {
   date?: string;
   image: string; // URL to certificate image
   credentialUrl?: string;
-}
-
-export interface LeadershipItem {
-  role: string;
-  organization: string;
-  description: string;
-  highlight: string;
-  icon: LucideIcon;
-}
-
-export interface SocialLink {
-  platform: string;
-  url: string;
-  icon: LucideIcon;
 }

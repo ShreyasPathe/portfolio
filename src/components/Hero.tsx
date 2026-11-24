@@ -1,84 +1,221 @@
-import React, { useRef } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
-import { ArrowDownRight, Github, Linkedin } from 'lucide-react';
-import { SOCIAL_LINKS, EXPERIENCE_DATA } from '../constants';
-import { SplitReveal, scrollToId } from './fx/Enhancers';
-import { LOADER_MS } from './fx/Hud';
+import { useEffect, useRef, useState } from 'react';
+import { motion, useReducedMotion, useScroll, useTransform, type MotionValue } from 'framer-motion';
+import { ArrowDown, ArrowUpRight } from '@phosphor-icons/react';
+import { EXPERIENCE_DATA } from '../constants';
+import { EASE, scrollToId } from '../lib/motion';
+import GradientWaves from './bits/GradientWaves';
 
-const D = LOADER_MS / 1000;
-const fade = (delay: number) => ({
-  initial: { opacity: 0, y: 16 },
-  animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.8, delay: D + delay, ease: [0.22, 1, 0.36, 1] as const },
-});
+const NAME = ['Shreyas', 'Pathe'];
+const NAME_END_SCALE = 0.42;
 
-/** Pinned for 1 extra screen: the name zooms past the camera while details fall away. */
-const Hero: React.FC = () => {
+/**
+ * Scroll story (progress of the pinned hero, 0..1):
+ *   0.00–0.08  the line, role, company and actions step aside
+ *   0.00–0.19  the name glides up, and "Hi there, I'm" sits to its left
+ *   0.12–0.18  the greeting and pitch appear around the name
+ *   0.17–0.80  the pitch lights up word by word
+ *   0.84–1.00  the sea dims and About follows
+ */
+
+/** Name letters rising out of a soft blur, one after another. */
+function Letters({ word, offset }: { word: string; offset: number }) {
+  const reduce = useReducedMotion();
+  return (
+    <span className="inline-block pb-3 align-top">
+      {word.split('').map((ch, i) => (
+        <motion.span
+          key={i}
+          className="hero-name inline-block"
+          initial={reduce ? { opacity: 0 } : { opacity: 0, y: '35%', filter: 'blur(14px)' }}
+          animate={{ opacity: 1, y: '0%', filter: 'blur(0px)' }}
+          transition={{ duration: 1.1, delay: 0.35 + (offset + i) * 0.05, ease: EASE }}
+        >
+          {ch}
+        </motion.span>
+      ))}
+    </span>
+  );
+}
+
+/** One word of the pitch; brightens as scroll passes its slot. */
+function Word({ children, progress, range }: { children: string; progress: MotionValue<number>; range: [number, number] }) {
+  const opacity = useTransform(progress, range, [0.22, 1]);
+  const y = useTransform(progress, range, [8, 0]);
+  return <motion.span style={{ opacity, y }} className="inline-block">{children}&nbsp;</motion.span>;
+}
+
+export default function Hero() {
+  const reduce = useReducedMotion();
   const current = EXPERIENCE_DATA[0];
-  const ref = useRef<HTMLElement>(null);
-  const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] });
-  const scale = useTransform(scrollYProgress, [0, 0.6], [1, 2.6]);
-  const nameY = useTransform(scrollYProgress, [0, 0.6], ['0%', '-30%']);
-  const nameOpacity = useTransform(scrollYProgress, [0.25, 0.6], [1, 0]);
-  const blur = useTransform(scrollYProgress, [0.2, 0.6], ['blur(0px)', 'blur(12px)']);
-  const detailsY = useTransform(scrollYProgress, [0, 0.4], ['0%', '60%']);
-  const detailsOpacity = useTransform(scrollYProgress, [0, 0.3], [1, 0]);
-  const auroraScale = useTransform(scrollYProgress, [0, 1], [1, 1.6]);
+  const sectionRef = useRef<HTMLElement>(null);
+  const nameWrapRef = useRef<HTMLDivElement>(null);
+  const greetRef = useRef<HTMLParagraphElement>(null);
+
+  // The greeting is pinned to the name's left edge. The pitch starts under that line.
+  const [layout, setLayout] = useState({ lift: 0, scale: NAME_END_SCALE, shift: 0, pitchTop: 180 });
+  useEffect(() => {
+    const measure = () => {
+      const el = nameWrapRef.current;
+      const greet = greetRef.current;
+      if (!el || !greet) return;
+      const available = el.closest('.container-x')?.clientWidth ?? window.innerWidth - 32;
+      const scale = Math.min(NAME_END_SCALE, Math.max(0.2, (available - 4) / (greet.offsetWidth + el.offsetWidth)));
+      const landTop = 156;
+      const visualTop = el.offsetTop + el.offsetHeight * (1 - scale); // scale is anchored bottom-left
+      const height = el.offsetHeight * scale;
+      setLayout({
+        lift: Math.max(0, visualTop - landTop),
+        scale,
+        shift: greet.offsetWidth * scale,
+        pitchTop: landTop + height + 40,
+      });
+    };
+    measure();
+    window.addEventListener('resize', measure);
+    let alive = true;
+    document.fonts?.ready.then(() => { if (alive) measure(); });
+    return () => {
+      alive = false;
+      window.removeEventListener('resize', measure);
+    };
+  }, []);
+
+  const { scrollYProgress: p } = useScroll({ target: sectionRef, offset: ['start start', 'end end'] });
+
+  const nameY = useTransform(p, [0, 0.19], [0, -layout.lift]);
+  const nameX = useTransform(p, [0, 0.19], [0, layout.shift]);
+  const nameScale = useTransform(p, [0, 0.19], [1, layout.scale]);
+  const quoteOpacity = useTransform(p, [0, 0.08], [1, 0]);
+  const quoteY = useTransform(p, [0, 0.08], [0, -16]);
+  const factsOpacity = useTransform(p, [0, 0.08], [1, 0]);
+  const factsY = useTransform(p, [0, 0.08], [0, 24]);
+  const factsPointer = useTransform(factsOpacity, v => (v > 0.5 ? 'auto' : 'none'));
+  const pitchOpacity = useTransform(p, [0.12, 0.18], [0, 1]);
+  const veil = useTransform(p, [0.12, 0.22], [0, 0.45]); // darken the sea behind the pitch
+  const seaOpacity = useTransform(p, [0.84, 1], [1, 0.35]);
+
+  const pitch = `If it isn't figured out yet, that's the work I want. Adept and always open, I thrive in fast-paced environments and live by continuous learning. I build Shopify storefronts and web apps at ${current.company}. With AI, the possibilities are limitless, and I believe I can build anything.`.split(' ');
+  const wStart = 0.17, wEnd = 0.8, step = (wEnd - wStart) / pitch.length;
+
+  const facts = [
+    { k: 'Role', v: 'Full stack engineer' },
+    { k: 'Currently', v: current.company, img: current.image },
+    { k: 'Focus', v: 'Shopify, MERN, LLM products' },
+  ];
+
+  const intro = (delay: number) => ({
+    initial: reduce ? { opacity: 0 } : { opacity: 0, y: 14, filter: 'blur(8px)' },
+    animate: { opacity: 1, y: 0, filter: 'blur(0px)' },
+    transition: { duration: 0.9, delay: reduce ? 0 : delay, ease: EASE },
+  });
 
   return (
-    <section id="hero" ref={ref} className="relative h-[200svh]">
-      <div className="sticky top-0 h-[100svh] overflow-hidden flex flex-col justify-end px-5 md:px-10 pt-32 pb-10">
-        <motion.div aria-hidden style={{ scale: auroraScale }} className="absolute inset-0">
-          <div className="absolute -top-40 left-[5%] h-[520px] w-[520px] rounded-full bg-accent/[0.12] blur-[140px] animate-aurora" />
-          <div className="absolute top-[5%] right-[0%] h-[480px] w-[480px] rounded-full bg-violet-600/20 blur-[140px] animate-aurora [animation-delay:-6s]" />
-          <div className="absolute bottom-[-10%] left-[30%] h-[400px] w-[600px] rounded-full bg-sky-500/10 blur-[150px] animate-aurora [animation-delay:-12s]" />
+    <section id="hero" ref={sectionRef} className="relative h-[320svh]">
+      <div className="sticky top-0 isolate h-[100svh] overflow-hidden bg-ink">
+        {/* Night sky behind the sea's horizon haze */}
+        <div className="absolute inset-0 -z-30" style={{ background: 'linear-gradient(180deg, #03050F 0%, #080D28 25%, #161D52 40%, #0A0F2C 100%)' }} />
+
+        {/* The sea (React Bits GradientWaves) */}
+        <motion.div className="absolute inset-0 -z-20" style={{ opacity: seaOpacity }}>
+          <GradientWaves
+            horizonColor="#1C2263"
+            waveColor="#0E6E96"
+            crestColor="#B8F7FF"
+            backgroundColor="transparent"
+            speed={0.32}
+            amplitude={1.3}
+            waveScale={1.7}
+            waveRatio={0.75}
+            turbulence={34}
+            swell={22}
+            tilt={72}
+            fogDepth={14}
+            lightAngle={110}
+            sheen={1}
+            brightness={1.15}
+            grain={0.12}
+            quality="medium"
+            dpr={1.25}
+          />
         </motion.div>
 
-        <div className="relative z-10 mx-auto w-full max-w-7xl">
-          <motion.div {...fade(0.1)} className="mb-8 flex flex-wrap items-center gap-3">
-            <span className="glass inline-flex items-center gap-2 rounded-full px-3 py-1.5 font-mono text-xs text-muted">
-              <span className="h-1.5 w-1.5 rounded-full bg-accent animate-pulse-dot" /> Hello World
-            </span>
-            <span className="font-mono text-xs text-muted">
-              Currently — {current.title} @ <span className="text-fg">{current.company}</span>
-            </span>
-          </motion.div>
+        {/* Legibility: soft shade under the text, deeper while the pitch is up */}
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-[45%] bg-gradient-to-t from-ink/80 via-ink/40 to-transparent" />
+        <motion.div className="pointer-events-none absolute inset-0 -z-10 bg-ink" style={{ opacity: veil }} />
 
-          <motion.h1 style={{ scale, y: nameY, opacity: nameOpacity, filter: blur }}
-            className="origin-[30%_70%] font-semibold tracking-[-0.055em] leading-[0.85] text-fg text-[clamp(4rem,14.5vw,15rem)]">
-            <span className="block font-serif italic font-normal tracking-normal text-muted text-[0.3em] leading-none mb-3 ml-1">
-              <SplitReveal text="I am" delay={D + 0.1} />
-            </span>
-            <SplitReveal text="Shreyas" delay={D + 0.2} />
-            <br className="md:hidden" />
-            <span className="hidden md:inline">&nbsp;</span>
-            <SplitReveal text="Pathe" delay={D + 0.45} className="text-accent" />
-          </motion.h1>
+        <motion.div style={{ opacity: quoteOpacity, y: quoteY }} className="absolute inset-x-0 top-32 z-10 px-4 sm:top-36 sm:px-8">
+          <div className="container-x">
+            <motion.figure {...intro(0.15)} className="max-w-2xl">
+              <blockquote className="text-sm leading-relaxed text-muted sm:text-base">
+                Empty your mind. Be formless, shapeless, like water. You put water into a cup, it becomes the cup. You put water into a bottle, it becomes the bottle. You put it in a teapot, it becomes the teapot. Now water can flow or it can crash. Be water, my friend.
+              </blockquote>
+              <figcaption className="mt-4 text-sm text-subtle">- Bruce Lee</figcaption>
+            </motion.figure>
+          </div>
+        </motion.div>
 
-          <motion.div style={{ y: detailsY, opacity: detailsOpacity }}
-            className="mt-12 grid gap-8 border-t border-line pt-8 md:grid-cols-12 md:items-end">
-            <motion.div {...fade(0.8)} className="md:col-span-5">
-              <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-muted mb-2">Role</p>
-              <h2 className="text-xl md:text-2xl text-fg">IT Engineer <span className="text-muted">/</span> Full Stack Developer</h2>
+        <div className="relative flex h-full flex-col justify-end px-4 pb-12 pt-32 sm:px-8">
+          <div className="container-x">
+            <motion.div ref={nameWrapRef} style={{ x: nameX, y: nameY, scale: nameScale }} className="relative w-max origin-bottom-left will-change-transform">
+              <motion.p
+                ref={greetRef}
+                aria-hidden
+                style={{ opacity: pitchOpacity }}
+                className="hero-name absolute bottom-0 right-full whitespace-nowrap pb-3 pr-[0.35em] text-[clamp(2.75rem,10vw,8rem)] font-semibold leading-none tracking-tighter"
+              >
+                Hi there, I'm
+              </motion.p>
+              <h1 aria-label="Hi there, I'm Shreyas Pathe" className="relative whitespace-nowrap text-[clamp(2.75rem,10vw,8rem)] font-semibold leading-none tracking-tighter">
+                <span aria-hidden className="flex flex-row items-baseline gap-[0.22em]">
+                  <Letters word={NAME[0]} offset={0} />
+                  <Letters word={NAME[1]} offset={NAME[0].length} />
+                </span>
+                {/* One light sheen across the name once it has landed */}
+                <span aria-hidden className="pointer-events-none absolute inset-0 flex flex-row items-baseline gap-[0.22em]">
+                  {NAME.map(w => <span key={w} className="hero-sheen inline-block pb-3">{w}</span>)}
+                </span>
+              </h1>
             </motion.div>
-            <motion.p {...fade(0.9)} className="md:col-span-4 text-muted leading-relaxed">
-              Building secure, scalable, and majestic digital experiences.
-            </motion.p>
-            <motion.div {...fade(1)} className="md:col-span-3 flex items-center gap-2 md:justify-end">
-              <button onClick={() => scrollToId('projects')}
-                className="group inline-flex items-center gap-2 rounded-full bg-accent px-5 py-3 text-sm font-medium text-ink transition-transform hover:scale-[1.03]">
-                View Work <ArrowDownRight className="h-4 w-4 transition-transform group-hover:-rotate-45" />
-              </button>
-              <a href={SOCIAL_LINKS.github} target="_blank" rel="noreferrer" aria-label="GitHub"
-                className="glass grid h-11 w-11 place-items-center rounded-full text-muted hover:text-fg transition-colors"><Github className="h-4 w-4" /></a>
-              <a href={SOCIAL_LINKS.linkedin} target="_blank" rel="noreferrer" aria-label="LinkedIn"
-                className="glass grid h-11 w-11 place-items-center rounded-full text-muted hover:text-fg transition-colors"><Linkedin className="h-4 w-4" /></a>
+
+            <motion.div style={{ opacity: factsOpacity, y: factsY, pointerEvents: factsPointer }}>
+              <div className="relative mt-10 grid grid-cols-2 gap-6 pt-6 md:mt-12 md:grid-cols-[1fr_1fr_1fr_auto] md:items-center md:gap-8 md:pt-8">
+                {/* Divider draws in from the left */}
+                <motion.span
+                  aria-hidden
+                  className="absolute inset-x-0 top-0 h-px origin-left bg-gradient-to-r from-foam/40 via-line-strong to-transparent"
+                  initial={{ scaleX: reduce ? 1 : 0 }} animate={{ scaleX: 1 }}
+                  transition={{ duration: 1.2, delay: reduce ? 0 : 1, ease: EASE }}
+                />
+                {facts.map((f, i) => (
+                  <motion.div key={f.k} {...intro(1.15 + i * 0.1)}>
+                    <div className="caption text-foam/70">{f.k}</div>
+                    <div className="title-3 mt-2 flex items-center gap-2 text-fg">
+                      {f.img && <img src={f.img} alt="" className="h-5 w-5 rounded-md object-cover" />}
+                      {f.v}
+                    </div>
+                  </motion.div>
+                ))}
+                <motion.div {...intro(1.45)} className="flex flex-col items-start gap-3 md:flex-row md:flex-wrap">
+                  <button onClick={() => scrollToId('projects')} className="btn-primary">
+                    View projects <ArrowDown size={14} />
+                  </button>
+                  <button onClick={() => scrollToId('contact')} className="btn-ghost">
+                    Contact <ArrowUpRight size={14} />
+                  </button>
+                </motion.div>
+              </div>
             </motion.div>
-          </motion.div>
+          </div>
         </div>
+
+        <motion.div style={{ opacity: pitchOpacity, top: layout.pitchTop }} className="pointer-events-none absolute inset-x-0 px-4 sm:px-8">
+          <p className="container-x max-w-4xl text-base font-medium leading-relaxed text-fg sm:text-4xl sm:font-semibold sm:leading-normal sm:tracking-tight">
+            {pitch.map((w, i) => (
+              <Word key={i} progress={p} range={[wStart + i * step, wStart + (i + 1) * step]}>{w}</Word>
+            ))}
+          </p>
+        </motion.div>
       </div>
     </section>
   );
-};
-
-export default Hero;
+}

@@ -1,5 +1,4 @@
-import type { NavItem, ExperienceItem, ProjectItem, SkillCategory, CertificationItem, LeadershipItem } from './types';
-import { Trophy, Users, Flag, Medal } from 'lucide-react';
+import type { NavItem, ExperienceItem, ProjectItem, SkillCategory, CertificationItem } from './types';
 
 export const SOCIAL_LINKS = {
   github: "https://github.com/ShreyasPathe",
@@ -12,11 +11,12 @@ export const NAV_ITEMS: NavItem[] = [
   { label: 'Experience', to: 'experience' },
   { label: 'Projects', to: 'projects' },
   { label: 'Skills', to: 'skills' },
-  { label: 'Certifications', to: 'certifications' },
   { label: 'Contact', to: 'contact' },
 ];
 
-export const ABOUT_TEXT = "I am a technology enthusiast and an IT Engineer with a strong passion for building modern, scalable, and user-friendly digital experiences. I specialize in full stack development using the MERN stack and love crafting seamless, tech-driven solutions with a focus on performance, design, and usability. I love building conversion-friendly websites and have extensive experience building Shopify and WordPress based solutions alongside custom web applications. I enjoy working on challenging problems, learning new technologies, and creating products that make an impact.";
+export const EMAIL = "patheshreyas7@gmail.com";
+
+
 
 export const EXPERIENCE_DATA: ExperienceItem[] = [
   {
@@ -36,7 +36,6 @@ export const EXPERIENCE_DATA: ExperienceItem[] = [
     company: "ITAGO",
     period: "Feb 2026 – Apr 2026",
     location: "Mumbai, Maharashtra, India (Hybrid)",
-    type: "Freelance",
     image: "/images/itago-logo.jpg",
     description: [
       "Built a 0 → 1 AI chatbot platform for compliance & governance CXOs, owning complete full-stack development (frontend, backend, infra) as the first engineer.",
@@ -51,7 +50,6 @@ export const EXPERIENCE_DATA: ExperienceItem[] = [
     company: "dear digital",
     period: "Nov 2025 – Jan 2026",
     location: "Ghent, Flemish Region, Belgium (Remote)",
-    type: "Internship",
     image: "/images/dd-logo.jpeg",
     description: [
       "Gained hands-on experience in the Shopify ecosystem, learning and applying concepts from the Shopify Partner and Shopify Learn platforms.",
@@ -64,7 +62,6 @@ export const EXPERIENCE_DATA: ExperienceItem[] = [
     company: "The Work Journals",
     period: "Aug 2025 – Oct 2025",
     location: "Mumbai, Maharashtra, India (On-site)",
-    type: "Internship",
     image: "/images/twj-logo.jpg",
     description: [
       "Built and launched 6+ production-ready websites leveraging PHP, Shopify Liquid, and WordPress, with complete ownership of development, deployment, and hosting infrastructure.",
@@ -76,12 +73,12 @@ export const EXPERIENCE_DATA: ExperienceItem[] = [
 
 export const PROJECTS_DATA: ProjectItem[] = [
   {
-    title: "PetChain",
-    category: "Blockchain",
-    description: "PetChain is a decentralised blockchain-based platform that redefines the standards of pet care and management. Leveraging the power of Resilient DB, PetChain offers secure and tamper-proof pet identification, seamless health record management, and hassle-free ownership transfer capabilities.",
-    tags: ["Blockchain", "ResilientDB", "Decentralized Platform"],
-    image: "/images/petchain.jpeg",
-    liveUrl: "https://github.com/ShreyasPathe/petchain"
+    title: "SignSpeak",
+    category: "AI/ML & Next.js",
+    description: "Developed a sign language detection system using Python and ML, with a Next.js interface for one-click setup and execution, as part of my B.E. Major Project.",
+    tags: ["Python", "Next.js", "AI/ML"],
+    image: "/images/signspeak.png",
+    liveUrl: "https://signspeak-lilac.vercel.app/"
   },
   {
     title: "ITAGO",
@@ -92,35 +89,11 @@ export const PROJECTS_DATA: ProjectItem[] = [
     liveUrl: "https://www.itago.in/"
   },
   {
-    title: "SignSpeak",
-    category: "AI/ML & Next.js",
-    description: "Developed a sign language detection system using Python and ML, with a Next.js interface for one-click setup and execution, as part of my B.E. Major Project.",
-    tags: ["Python", "Next.js", "AI/ML"],
-    image: "/images/signspeak.png",
-    liveUrl: "https://signspeak-lilac.vercel.app/"
-  },
-  {
-    title: "AI Finance Dashboard",
-    category: "Next.js & AI",
-    description: "A modern full-stack personal finance dashboard with AI-based receipt scanning via Google Gemini API, secure Auth (Clerk), and dynamic data visualization.",
-    tags: ["Next.js 15", "Supabase", "Gemini AI", "Inngest"],
-    image: "/images/financeai64.png",
-    liveUrl: "https://financeai64.xyz" 
-  },
-  {
-    title: "Edemy LMS",
-    category: "Full Stack",
-    description: "A comprehensive Learning Management System for creating and consuming courses, featuring Stripe payments and Cloudinary media management.",
-    tags: ["React", "Node.js", "MongoDB", "Stripe"],
-    image: "/images/edemy.png",
-    liveUrl: "https://lms-edemy-8xy7.vercel.app"
-  },
-  {
     title: "BareNue",
     category: "Shopify",
-    description: "Women's lingerie brand platform driving ₹1L+ monthly sales. Built with custom Shopify Liquid modules for a seamless shopping experience.",
+    description: "Women's lingerie brand platform that crossed ₹1 lakh+ in sales in the first month of launch. Built with custom Shopify Liquid modules for a seamless shopping experience.",
     tags: ["Shopify", "Liquid", "E-Commerce"],
-    image: "/images/barenue.png",
+    image: "/images/barenue-updated.png",
     liveUrl: "https://barenue.in"
   },
   {
@@ -146,6 +119,30 @@ export const PROJECTS_DATA: ProjectItem[] = [
     tags: ["Shopify", "Education", "Web Design"],
     image: "/images/vjcc.png",
     liveUrl: "https://vjccculinaryarts.com"
+  },
+  {
+    title: "Edemy LMS",
+    category: "Full Stack",
+    description: "A comprehensive Learning Management System for creating and consuming courses, featuring Stripe payments and Cloudinary media management.",
+    tags: ["React", "Node.js", "MongoDB", "Stripe"],
+    image: "/images/edemy.png",
+    liveUrl: "https://lms-edemy-8xy7.vercel.app"
+  },
+  {
+    title: "AI Finance Dashboard",
+    category: "Next.js & AI",
+    description: "A modern full-stack personal finance dashboard with AI-based receipt scanning via Google Gemini API, secure Auth (Clerk), and dynamic data visualization.",
+    tags: ["Next.js 15", "Supabase", "Gemini AI", "Inngest"],
+    image: "/images/financeai64.png",
+    liveUrl: "https://financeai64.xyz" 
+  },
+  {
+    title: "PetChain",
+    category: "Blockchain",
+    description: "PetChain is a decentralised blockchain-based platform that redefines the standards of pet care and management. Leveraging the power of Resilient DB, PetChain offers secure and tamper-proof pet identification, seamless health record management, and hassle-free ownership transfer capabilities.",
+    tags: ["Blockchain", "ResilientDB", "Decentralized Platform"],
+    image: "/images/petchain.jpeg",
+    liveUrl: "https://github.com/ShreyasPathe/petchain"
   }
 ];
 
@@ -184,11 +181,9 @@ export const SKILLS_DATA: SkillCategory[] = [
   }
 ];
 
-/* ----------- FIX: EXTENDED TYPE TO INCLUDE logoBgColor ----------- */
 export type CertificationItemExtended = CertificationItem & {
   logoBgColor: string;
 };
-/* ---------------------------------------------------------------- */
 
 export const CERTIFICATIONS_DATA: CertificationItemExtended[] = [
   {
@@ -246,43 +241,5 @@ export const CERTIFICATIONS_DATA: CertificationItemExtended[] = [
     image: "https://upload.wikimedia.org/wikipedia/commons/c/ca/LinkedIn_logo_initials.png",
     credentialUrl: "https://www.linkedin.com/learning/certificates/95717d386dce390fcefc23e95aa33757297876cbe5382e100e2d429e8502f55c",
     logoBgColor: 'white'
-  },
-  {
-    name: "Business Analysis & Process Management",
-    issuer: "Coursera",
-    image: "https://cdn.simpleicons.org/coursera/0056D2",
-    credentialUrl: "https://www.coursera.org/account/accomplishments/verify/U8R8O8PBK6ND",
-    logoBgColor: 'white'
-  }
-];
-
-export const LEADERSHIP_DATA: LeadershipItem[] = [
-  {
-    role: "Technical Lead",
-    organization: "College Tech Club",
-    description: "Led a team of 20+ students to organize technical workshops and hackathons. Managed the club's digital presence and technical infrastructure.",
-    highlight: "Leadership",
-    icon: Users
-  },
-  {
-    role: "Campus Ambassador",
-    organization: "TechFest 2024",
-    description: "Represented the college at national level events, coordinating with 50+ participating institutions and managing logistics for 500+ attendees.",
-    highlight: "Outreach",
-    icon: Flag
-  },
-  {
-    role: "Hackathon Winner",
-    organization: "National Codeathon",
-    description: "Secured 1st place among 100+ teams by developing an innovative solution for smart city traffic management using IoT and Machine Learning.",
-    highlight: "Achievement",
-    icon: Trophy
-  },
-  {
-    role: "Sports Captain",
-    organization: "College Badminton Team",
-    description: "Led the college team to state-level semi-finals. Organized inter-departmental tournaments and managed team training schedules.",
-    highlight: "Teamwork",
-    icon: Medal
   }
 ];

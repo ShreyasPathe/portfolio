@@ -1,44 +1,123 @@
-@import url('https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-html { scroll-behavior: auto; overflow-x: clip; }
-body {
-  background: #08080a;
-  color: #ededed;
-  font-family: 'Geist', system-ui, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  overflow-x: clip;
-}
-::selection { background: #c8ff4d; color: #08080a; }
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: #08080a; }
-::-webkit-scrollbar-thumb { background: #26262b; border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: #c8ff4d; }
+@layer base {
+  /* Night-sea palette, taken from the hero: indigo sky, teal water, foam crests. */
+  :root {
+    --ink: 7 10 31;
+    --surface-1: 13 19 50;
+    --surface-2: 18 26 64;
+    --surface-3: 27 37 84;
+    --surface-4: 40 54 110;
+    --line: rgba(184, 210, 255, 0.10);
+    --line-strong: rgba(184, 210, 255, 0.20);
+    --fg: 255 255 255;
+    --muted: 178 190 224;
+    --subtle: 128 142 186;
+    --indigo: 124 140 255;
+    --aqua: 95 225 240;
+    --foam: 184 247 255;
+    --grad-from: #FFFFFF;
+    --grad-to: #CFE3FF;
+  }
 
-.bg-dot-grid {
-  background-image: radial-gradient(rgba(255,255,255,0.09) 1px, transparent 1px);
-  background-size: 24px 24px;
-  mask-image: radial-gradient(ellipse at top, black 20%, transparent 75%);
+  html { overflow-x: clip; background: rgb(var(--ink)); }
+  body {
+    @apply bg-ink text-fg font-sans antialiased;
+    overflow-x: clip;
+    text-rendering: optimizeLegibility;
+  }
+  h1, h2, h3, h4 { text-wrap: balance; }
+  p, li { text-wrap: pretty; }
+  ::selection { background: rgb(var(--aqua)); color: rgb(var(--ink)); }
+  :focus-visible { outline: 2px solid rgb(var(--aqua)); outline-offset: 3px; border-radius: 6px; }
+  ::-webkit-scrollbar { width: 8px; }
+  ::-webkit-scrollbar-track { background: rgb(var(--ink)); }
+  ::-webkit-scrollbar-thumb { background: rgb(var(--surface-4)); border-radius: 8px; }
 }
-.grain {
-  opacity: 0.045;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+
+/* Named text styles. Every text element uses one of these. */
+@layer components {
+  .heading-1 { @apply text-5xl sm:text-6xl lg:text-7xl font-semibold tracking-tight; }
+  .heading-2 { @apply text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-tight; }
+  .heading-3 { @apply text-3xl sm:text-4xl font-semibold tracking-tight; }
+  .heading-4 { @apply text-2xl font-semibold tracking-tight; }
+  .title-1 { @apply text-xl font-medium tracking-tight; }
+  .title-2 { @apply text-lg font-medium; }
+  .title-3 { @apply text-base font-medium; }
+  .body-1 { @apply text-lg text-muted; }
+  .body-2 { @apply text-base text-muted; }
+  .body-3 { @apply text-sm text-muted; }
+  .caption { @apply font-mono text-xs uppercase tracking-widest text-subtle; }
+  .button-text { @apply text-sm font-medium; }
+
+  .text-gradient {
+    background-image: linear-gradient(180deg, var(--grad-from) 0%, var(--grad-to) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* Aurora text, for the few words that should glow. */
+  .text-aurora {
+    background-image: linear-gradient(100deg, rgb(var(--indigo)) 0%, rgb(var(--aqua)) 55%, rgb(var(--foam)) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .btn {
+    @apply button-text inline-flex items-center gap-2 rounded-full px-4 py-2
+      transition-[transform,opacity,background-color,border-color] duration-300 ease-out
+      active:scale-[0.98] disabled:opacity-50;
+  }
+  .btn-primary { @apply btn bg-fg text-ink hover:opacity-90; }
+  .btn-ghost { @apply btn border border-line-strong text-fg hover:bg-surface-2; }
+
+  .section { @apply relative px-4 sm:px-8 py-24; }
+  .container-x { @apply mx-auto w-full max-w-6xl; }
 }
-.text-outline { -webkit-text-stroke: 1px rgba(255,255,255,0.12); color: transparent; }
-.glass {
-  background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02));
-  backdrop-filter: blur(16px) saturate(140%);
-  -webkit-backdrop-filter: blur(16px) saturate(140%);
-  border: 1px solid rgba(255,255,255,0.1);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), inset 0 -1px 0 rgba(0,0,0,0.3), 0 10px 30px -10px rgba(0,0,0,0.6);
+
+@keyframes project-progress {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
 }
-.card {
-  @apply relative rounded-2xl border border-line bg-panel/85 backdrop-blur-md transition-colors duration-300;
+
+/* Site-wide night backdrop: the hero's indigo sky and teal water carried down the page.
+   A fixed layer (not background-attachment: fixed), so it is composited and scrolls smoothly. */
+.site-backdrop {
+  background:
+    radial-gradient(70% 45% at 85% 0%, rgba(46, 60, 170, 0.5), transparent 70%),
+    radial-gradient(60% 50% at 0% 55%, rgba(14, 110, 150, 0.26), transparent 70%),
+    radial-gradient(60% 45% at 100% 100%, rgba(95, 225, 240, 0.12), transparent 70%),
+    linear-gradient(180deg, #0A0F2C 0%, rgb(var(--ink)) 50%, #060A22 100%);
 }
-.card:hover { border-color: rgba(200,255,77,0.35); }
+
+/* Hero name: letters rise out of a soft blur, then a single sheen passes over them. */
+.hero-name {
+  background-image: linear-gradient(180deg, #FFFFFF 0%, #FFFFFF 45%, #CFE3FF 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 2px 24px rgba(10, 16, 50, 0.65));
+}
+.hero-sheen {
+  background-image: linear-gradient(100deg, transparent 35%, rgba(184, 247, 255, 0.9) 50%, transparent 65%);
+  background-size: 250% 100%;
+  background-position: 120% 0;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: sheen 1.6s cubic-bezier(0.22, 1, 0.36, 1) 1.5s both;
+}
+@keyframes sheen {
+  from { background-position: 120% 0; }
+  to { background-position: -40% 0; }
+}
 @media (prefers-reduced-motion: reduce) {
-  .animate-marquee, .animate-marquee-rev, .animate-aurora { animation: none; }
+  .hero-sheen { animation: none; opacity: 0; }
 }
+
